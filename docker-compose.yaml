@@ -1,23 +1,58 @@
 version: '3'
+
+x-verifier-common: &verifier-common
+  build: .
+  environment:
+    - CHAIN_ID=534352
+  volumes:
+    - ./data/cysic/keys:/root/.cysic/keys
+    - ./data/scroll_prover:/root/.scroll_prover
+  network_mode: "host"
+  restart: unless-stopped
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+
 services:
   verifier_instance_1:
-    build: .
-    environment:
-      - CHAIN_ID=534352
-    volumes:
-      - ./data/cysic/keys:/root/.cysic/keys
-      - ./data/scroll_prover:/root/.scroll_prover
-    network_mode: "host"
-    restart: unless-stopped
-    command: ["0x..."] # The command to run when the container starts, likely a verifier address.
+    <<: *verifier-common
+    command: ["0x67d3db971D3c6eC305fDd275f45d3C7FB48C5768"]
 
   verifier_instance_2:
-    build: .
-    environment:
-      - CHAIN_ID=534352
-    volumes:
-      - ./data/cysic/keys:/root/.cysic/keys
-      - ./data/scroll_prover:/root/.scroll_prover
-    network_mode: "host"
-    restart: unless-stopped
-    command: ["0x..."] # The command to run when the container starts, likely a verifier address.
+    <<: *verifier-common
+    command: ["0x7c27dF5C29A73914fd9b79F40fAd46ef298a3c70"]
+
+  verifier_instance_3:
+    <<: *verifier-common
+    command: ["0x0C4b5F1cE3534f8845C711383ba04EA6bFCD64fC"]
+
+  verifier_instance_4:
+    <<: *verifier-common
+    command: ["0xD6dB18018E4B98657c64dc2D0B9230adF61B984d"]
+
+  verifier_instance_5:
+    <<: *verifier-common
+    command: ["0x1Fc5e0aef381aEF838173ca4C3085aF20b2caFd8"]
+
+  verifier_instance_6:
+    <<: *verifier-common
+    command: ["0x85CaF088Bc052F0B8856E020682fd6E9c849a662"]
+
+  verifier_instance_7:
+    <<: *verifier-common
+    command: ["0x134303EC1dE96b6374D7A292721A7b3C8895b72a"]
+
+  verifier_instance_8:
+    <<: *verifier-common
+    command: ["0x81B5cA3Fb3ba471c67809e9fF9617B9236e05978"]
+
+  verifier_instance_9:
+    <<: *verifier-common
+    command: ["0xa25262CBCd042fa891C13a3eb71ef6245a4bc3C9"]
+
+  verifier_instance_10:
+    <<: *verifier-common
+    command: ["0x4Eb2A407aB70B83b163DA35336ee82542429Ac62"]
+
+

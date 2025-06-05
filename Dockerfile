@@ -7,18 +7,17 @@ RUN apt-get update && \
     bash \
     ca-certificates \
     libgcc-s1 \
-    wget && \
+    wget \
+    supervisor && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Set the working directory
 WORKDIR /app
 
 # Copy necessary files into the /app directory
-COPY config.yaml /app/config.yaml
-COPY start.sh /app/start.sh
-COPY verifier /app/verifier
-COPY libdarwin_verifier.so /app/libdarwin_verifier.so
-COPY librsp.so /app/librsp.so
+COPY config.yaml start.sh verifier libdarwin_verifier.so librsp.so /app/
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Ensure the verifier and start.sh are executable
 RUN chmod +x /app/start.sh /app/verifier
@@ -27,6 +26,6 @@ RUN chmod +x /app/start.sh /app/verifier
 ENV LD_LIBRARY_PATH=/app
 ENV CHAIN_ID=534352
 
-# Use start.sh as the entry point
-ENTRYPOINT ["/app/start.sh"]
+# Use supervisord as the entry point
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 

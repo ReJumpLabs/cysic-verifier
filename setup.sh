@@ -25,32 +25,40 @@ echo 'Start config docker-compose'
 rm -rf docker-compose.yaml
 output_file="docker-compose.yaml"
 
-echo "version: '3'" > $output_file
-echo "services:" >> $output_file
+# Write the optimized template structure
+cat <<EOF > $output_file
+version: '3'
 
+x-verifier-common: &verifier-common
+  build: .
+  environment:
+    - CHAIN_ID=534352
+  volumes:
+    - ./data/cysic/keys:/root/.cysic/keys
+    - ./data/scroll_prover:/root/.scroll_prover
+  network_mode: "host"
+  restart: unless-stopped
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+
+services:
+EOF
+
+# Add services dynamically from evm.txt
 i=1
 while IFS= read -r evm_address || [ -n "$evm_address" ]; do
   cat <<EOL >> $output_file
   verifier_instance_$i:
-    build: .
-    environment:
-      - CHAIN_ID=534352
-    volumes:
-      - ./data/cysic/keys:/root/.cysic/keys
-      - ./data/scroll_prover:/root/.scroll_prover
-    network_mode: "host"
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
+    <<: *verifier-common
     command: ["$evm_address"]
 
 EOL
   i=$((i + 1))
 done < evm.txt
 
-echo "docker-compose.yml generated with $((i - 1)) instances."
+echo "docker-compose.yml generated with $((i - 1)) instances using optimized template."
 
 echo "Docker building & start"
 
